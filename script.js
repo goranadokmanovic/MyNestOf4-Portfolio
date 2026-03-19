@@ -1,0 +1,264 @@
+// Smooth scroll for CTA and nav buttons (if desired to reuse)
+document.querySelectorAll("[data-scroll-to]").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    const target = btn.getAttribute("data-scroll-to");
+    if (!target) return;
+    const el = document.querySelector(target);
+    if (el) {
+      e.preventDefault();
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+});
+
+// Intersection Observer for scroll animations
+const observerOptions = {
+  threshold: 0.18,
+};
+
+const animateOnScroll = (entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("in-view");
+      // Once visible, you can unobserve to avoid toggling
+      observer.unobserve(entry.target);
+    }
+  });
+};
+
+const observer = new IntersectionObserver(animateOnScroll, observerOptions);
+
+document.querySelectorAll(".section-observe").forEach((el) => observer.observe(el));
+document.querySelectorAll(".section-observe-left").forEach((el) => observer.observe(el));
+document.querySelectorAll(".section-observe-right").forEach((el) => observer.observe(el));
+document.querySelectorAll(".float-up").forEach((el) => observer.observe(el));
+
+// Particle background (subtle golden dots)
+const canvas = document.getElementById("particle-canvas");
+const ctx = canvas.getContext("2d");
+
+let particles = [];
+let width = window.innerWidth;
+let height = window.innerHeight;
+let lastTime = 0;
+
+const particleConfig = {
+  count: 80,
+  maxRadius: 2.1,
+  minRadius: 0.6,
+  maxSpeed: 0.06,
+};
+
+function resizeCanvas() {
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width * window.devicePixelRatio;
+  canvas.height = height * window.devicePixelRatio;
+  ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function createParticles() {
+  particles = [];
+  for (let i = 0; i < particleConfig.count; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      radius:
+        particleConfig.minRadius +
+        Math.random() * (particleConfig.maxRadius - particleConfig.minRadius),
+      alpha: 0.25 + Math.random() * 0.65,
+      speedX: (Math.random() - 0.5) * particleConfig.maxSpeed,
+      speedY: (Math.random() - 0.5) * particleConfig.maxSpeed,
+      drift: Math.random() * 0.03,
+    });
+  }
+}
+
+createParticles();
+
+function updateParticles(delta) {
+  const timeFactor = delta || 16;
+  for (const p of particles) {
+    p.x += p.speedX * timeFactor;
+    p.y += p.speedY * timeFactor;
+
+    // gentle vertical drift
+    p.y -= p.drift * timeFactor;
+
+    // wrap around edges for endless floating feel
+    if (p.x < -20) p.x = width + 20;
+    if (p.x > width + 20) p.x = -20;
+    if (p.y < -20) p.y = height + 20;
+    if (p.y > height + 20) p.y = -20;
+  }
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, width, height);
+
+  // izbegni crtanje čestica direktno preko slike u "O meni"
+  const photoEl = document.querySelector(".photo-frame");
+  let excludeRect = null;
+  const pad = 30;
+  if (photoEl) {
+    const r = photoEl.getBoundingClientRect();
+    excludeRect = {
+      left: r.left - pad,
+      right: r.right + pad,
+      top: r.top - pad,
+      bottom: r.bottom + pad,
+    };
+  }
+
+  for (const p of particles) {
+    if (
+      excludeRect &&
+      p.x >= excludeRect.left &&
+      p.x <= excludeRect.right &&
+      p.y >= excludeRect.top &&
+      p.y <= excludeRect.bottom
+    ) {
+      continue;
+    }
+
+    const gradient = ctx.createRadialGradient(
+      p.x,
+      p.y,
+      0,
+      p.x,
+      p.y,
+      p.radius * 4
+    );
+    gradient.addColorStop(0, `rgba(250, 233, 192, ${p.alpha})`);
+    gradient.addColorStop(0.5, `rgba(201, 168, 76, ${p.alpha * 0.8})`);
+    gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius * 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function animateParticles(timestamp) {
+  const delta = timestamp - lastTime;
+  lastTime = timestamp;
+
+  updateParticles(delta);
+  drawParticles();
+
+  requestAnimationFrame(animateParticles);
+}
+
+requestAnimationFrame(animateParticles);
+
+// Simple parallax on scroll za hero i about sliku
+const parallaxElements = [
+  { selector: ".hero-content", factor: 0.07 },
+];
+
+function handleParallax() {
+  const scrollY = window.scrollY || window.pageYOffset;
+  parallaxElements.forEach(({ selector, factor }) => {
+    const el = document.querySelector(selector);
+    if (!el) return;
+    const offset = scrollY * factor;
+    el.style.transform = `translateY(${offset}px)`;
+  });
+}
+
+window.addEventListener("scroll", handleParallax);
+
+// Footer year
+const yearEl = document.getElementById("year");
+if (yearEl) {
+  yearEl.textContent = new Date().getFullYear();
+}
+
+// Prevent real submission (demo form)
+const contactForm = document.querySelector(".contact-form");
+if (contactForm) {
+  contactForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    alert(
+      "Hvala ti na poverenju! Ovo je demo forma – kada budeš spremna, ovde možemo povezati pravi način slanja poruke. ❤️"
+    );
+  });
+}
+
+// Pouzdane putanje za slike sa razmakom u nazivu
+const lineImg = document.querySelector(".decor-line-right img");
+if (lineImg) lineImg.src = "images/zlatna%20linija.png";
+const appFinansijeImg = document.querySelector('a[href*="licnefinansije"] .portfolio-image img');
+if (appFinansijeImg) appFinansijeImg.src = "images/app%20licne%20finansije.png";
+document.querySelectorAll(".portfolio-image img[alt*='3 kids']").forEach((el) => { el.src = "images/3%20kids.png?v=2"; });
+document.querySelectorAll(".portfolio-image img[alt*='Every single day']").forEach((el) => { el.src = "images/Every%20single%20day.png?v=4"; });
+
+const birdsVideoA = document.getElementById("birds-video-a");
+const birdsVideoB = document.getElementById("birds-video-b");
+const birdsVideoSrc = "images/ptice%20video.mp4?v=7";
+if (birdsVideoA) birdsVideoA.src = birdsVideoSrc;
+if (birdsVideoB) birdsVideoB.src = birdsVideoSrc;
+document.querySelectorAll(".hero-birds-prasina").forEach((el) => { el.src = "images/zvedana%20prasina.png?v=2"; });
+
+// Crossfade na kraju videa da se manje vidi prelazak u petlji
+if (birdsVideoA && birdsVideoB) {
+  const LOOP_FADE_START = 0.55;
+  let active = "a";
+  let crossfadeLock = false;
+
+  birdsVideoA.style.opacity = "0.9";
+  birdsVideoB.style.opacity = "0";
+  // Neka video bude spreman pre autoplay-a (ponekad play() dobije reject ako metapodaci još nisu učitani)
+  try {
+    birdsVideoA.load();
+    birdsVideoB.load();
+  } catch (e) {
+    // ignor
+  }
+
+  const startPlayback = () => {
+    birdsVideoA.play().catch(() => {});
+  };
+
+  birdsVideoA.addEventListener("loadedmetadata", startPlayback, { once: true });
+  birdsVideoA.addEventListener("canplay", startPlayback, { once: true });
+  // Fallback da se ne čeka zauvek
+  setTimeout(startPlayback, 700);
+
+  function doCrossfade() {
+    if (crossfadeLock) return;
+    crossfadeLock = true;
+    if (active === "a") {
+      birdsVideoB.currentTime = 0;
+      birdsVideoB.play();
+      birdsVideoA.style.opacity = "0";
+      birdsVideoB.style.opacity = "0.9";
+      active = "b";
+    } else {
+      birdsVideoA.currentTime = 0;
+      birdsVideoA.play();
+      birdsVideoB.style.opacity = "0";
+      birdsVideoA.style.opacity = "0.9";
+      active = "a";
+    }
+    setTimeout(() => {
+      (active === "a" ? birdsVideoB : birdsVideoA).pause();
+      (active === "a" ? birdsVideoB : birdsVideoA).currentTime = 0;
+      crossfadeLock = false;
+    }, 500);
+  }
+
+  birdsVideoA.addEventListener("timeupdate", () => {
+    if (active === "a" && birdsVideoA.duration && birdsVideoA.currentTime >= birdsVideoA.duration - LOOP_FADE_START) doCrossfade();
+  });
+  birdsVideoB.addEventListener("timeupdate", () => {
+    if (active === "b" && birdsVideoB.duration && birdsVideoB.currentTime >= birdsVideoB.duration - LOOP_FADE_START) doCrossfade();
+  });
+}
+
+// (Logo) ponašanje je sada isključivo CSS (`position: sticky`) – bez JS pomeranja.
+

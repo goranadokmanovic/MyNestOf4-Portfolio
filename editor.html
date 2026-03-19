@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raspored elemenata – My Nest Of 4</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #1a1a1a;
+      color: #e8d5b0;
+      height: 100vh;
+      display: flex;
+      flex-direction: row;
+    }
+    .frame-wrap {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+    }
+    .frame-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    .panel {
+      width: 320px;
+      padding: 1rem 1.25rem;
+      background: #252520;
+      border-left: 1px solid rgba(201, 168, 76, 0.3);
+      overflow-y: auto;
+    }
+    .panel h2 {
+      margin: 0 0 1rem;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #c9a84c;
+    }
+    .panel h3 {
+      margin: 1.25rem 0 0.5rem;
+      font-size: 0.85rem;
+      color: #b39d7c;
+    }
+    .panel label {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: #b39d7c;
+    }
+    .panel input[type="number"],
+    .panel input[type="range"] {
+      width: 100%;
+      margin-top: 0.25rem;
+      padding: 0.35rem;
+      background: #111;
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      border-radius: 4px;
+      color: #e8d5b0;
+      font-size: 0.9rem;
+    }
+    .panel input[type="range"] {
+      padding: 0;
+      height: 24px;
+    }
+    .panel input[type="checkbox"] {
+      margin-right: 0.5rem;
+      accent-color: #c9a84c;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #c9a84c;
+      color: #111;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .btn:hover { background: #d4b85c; }
+    .btn.secondary {
+      background: transparent;
+      color: #c9a84c;
+      border: 1px solid #c9a84c;
+    }
+    .btn.secondary:hover { background: rgba(201, 168, 76, 0.15); }
+    .value-display { font-size: 0.75rem; color: #888; margin-left: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="frame-wrap">
+    <iframe id="site" src="index.html" title="Portfolio"></iframe>
+  </div>
+  <aside class="panel">
+    <h2>Raspored elemenata</h2>
+    <p style="font-size: 0.8rem; color: #b39d7c; margin: 0;">Pomeraj vrednosti i vidi promene uživo. Kad ti odgovara, zapiši vrednosti ili koristi „Primeni u sajt”.</p>
+
+    <h3>Zlatna linija (desna)</h3>
+    <label><input type="checkbox" id="line-visible" checked /> Vidljiva</label>
+    <label>Širina (px) <input type="number" id="line-width" value="70" min="20" max="200" /></label>
+    <label>Providnost <span class="value-display" id="line-opacity-val">0.88</span><br />
+      <input type="range" id="line-opacity" min="0" max="100" value="88" /></label>
+    <label>Odstup od desne ivice (px) <input type="number" id="line-right" value="0" min="-100" max="100" /></label>
+
+    <h3>Logo (gore levo)</h3>
+    <label><input type="checkbox" id="logo-visible" checked /> Vidljiv</label>
+    <label>Odstup od vrha (px) <input type="number" id="logo-top" value="16" min="-50" max="200" /></label>
+    <label>Odstup od leve ivice (px) <input type="number" id="logo-left" value="16" min="-50" max="300" /></label>
+    <label>Širina (px) <input type="number" id="logo-width" value="110" min="50" max="250" /></label>
+
+    <h3>Ptice (pored loga)</h3>
+    <label><input type="checkbox" id="birds-visible" checked /> Vidljive</label>
+    <label>Širina (px) <input type="number" id="birds-width" value="90" min="40" max="180" /></label>
+    <label>Pomeraj desno od loga (px) <input type="number" id="birds-right" value="-24" min="-80" max="40" /></label>
+
+    <button class="btn" id="reset">Vrati na početno</button>
+  </aside>
+
+  <script>
+    (function() {
+      const iframe = document.getElementById('site');
+      const getDoc = () => iframe.contentDocument;
+      const getDocBody = () => iframe.contentDocument && iframe.contentDocument.body;
+
+      function applyStyles() {
+        const doc = getDoc();
+        if (!doc) return;
+        const line = doc.querySelector('.decor-line-right');
+        const logo = doc.querySelector('.hero-logo');
+        const logoImg = doc.querySelector('.hero-logo .logo-image');
+        const birds = doc.querySelector('.hero-birds');
+
+        if (line) {
+          line.style.display = document.getElementById('line-visible').checked ? '' : 'none';
+          line.style.width = document.getElementById('line-width').value + 'px';
+          line.style.right = document.getElementById('line-right').value + 'px';
+          const op = document.getElementById('line-opacity').value / 100;
+          line.querySelector('img').style.opacity = op;
+          document.getElementById('line-opacity-val').textContent = op.toFixed(2);
+        }
+        if (logo) {
+          logo.style.display = document.getElementById('logo-visible').checked ? '' : 'none';
+          logo.style.top = document.getElementById('logo-top').value + 'px';
+          logo.style.left = document.getElementById('logo-left').value + 'px';
+        }
+        if (logoImg) {
+          const w = document.getElementById('logo-width').value + 'px';
+          logoImg.style.width = w;
+          logoImg.style.height = w;
+        }
+        if (birds) {
+          birds.style.display = document.getElementById('birds-visible').checked ? '' : 'none';
+          birds.style.width = document.getElementById('birds-width').value + 'px';
+          birds.style.right = document.getElementById('birds-right').value + 'px';
+        }
+      }
+
+      function bind(id, event, fn) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener(event, fn);
+      }
+
+      ['line-visible','line-width','line-opacity','line-right','logo-visible','logo-top','logo-left','logo-width','birds-visible','birds-width','birds-right'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', applyStyles);
+      });
+
+      iframe.addEventListener('load', function() {
+        applyStyles();
+      });
+
+      document.getElementById('reset').addEventListener('click', function() {
+        document.getElementById('line-visible').checked = true;
+        document.getElementById('line-width').value = 70;
+        document.getElementById('line-opacity').value = 88;
+        document.getElementById('line-opacity-val').textContent = '0.88';
+        document.getElementById('line-right').value = 0;
+        document.getElementById('logo-visible').checked = true;
+        document.getElementById('logo-top').value = 16;
+        document.getElementById('logo-left').value = 16;
+        document.getElementById('logo-width').value = 110;
+        document.getElementById('birds-visible').checked = true;
+        document.getElementById('birds-width').value = 90;
+        document.getElementById('birds-right').value = -24;
+        applyStyles();
+      });
+    })();
+  </script>
+</body>
+</html>
