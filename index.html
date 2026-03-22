@@ -12,6 +12,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Lato:wght@300;400;500;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css?v=3" />
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
   <!-- Floating background particles -->
@@ -62,7 +65,7 @@
     <div class="section-inner about-layout">
       <div class="about-photo float-slow section-observe-left">
         <div class="photo-frame">
-          <img src="images/gorana-portret.png?v=2" alt="Gorana – osnivač MyNestOf4 brenda" />
+          <img src="images/gorana-portret.png?v=3" alt="Gorana – osnivač MyNestOf4 brenda" />
         </div>
       </div>
       <div class="about-text section-observe-right">
@@ -304,9 +307,7 @@
         <button type="submit" class="btn btn-gold">
           Pošalji poruku
         </button>
-        <p class="form-note">
-          Forma je demonstraciona – kada budeš spremna, možeš povezati slanje mejla ili kontakt preko društvenih mreža.
-        </p>
+        <div class="form-message" id="form-message"></div>
       </form>
     </div>
   </section>

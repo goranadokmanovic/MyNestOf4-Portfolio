@@ -178,16 +178,59 @@ if (yearEl) {
   yearEl.textContent = new Date().getFullYear();
 }
 
-// Prevent real submission (demo form)
-const contactForm = document.querySelector(".contact-form");
-if (contactForm) {
+// EmailJS contact form
+(function () {
+  emailjs.init("zdaAUQ4PdPaOYf5Vt");
+
+  const contactForm = document.querySelector(".contact-form");
+  if (!contactForm) return;
+
+  const msgEl = document.getElementById("form-message");
+  const submitBtn = contactForm.querySelector('button[type="submit"]');
+
+  function showMessage(text, isError) {
+    msgEl.textContent = text;
+    msgEl.className = "form-message " + (isError ? "form-message--error" : "form-message--success");
+    msgEl.style.display = "block";
+  }
+
   contactForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    alert(
-      "Hvala ti na poverenju! Ovo je demo forma – kada budeš spremna, ovde možemo povezati pravi način slanja poruke. ❤️"
-    );
+    msgEl.style.display = "none";
+
+    const name = contactForm.name.value.trim();
+    const email = contactForm.email.value.trim();
+    const message = contactForm.message.value.trim();
+
+    if (!name || !email) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Šaljem...";
+
+    const templateParams = {
+      from_name: name,
+      from_email: email,
+      message: message,
+    };
+
+    emailjs
+      .send("service_mymngpj", "template_9onp26e", templateParams)
+      .then(() => {
+        return emailjs.send("service_mymngpj", "template_91rffuw", templateParams);
+      })
+      .then(() => {
+        showMessage("Poruka je uspešno poslata! Javiću ti se uskoro.", false);
+        contactForm.reset();
+      })
+      .catch(() => {
+        showMessage("Nešto nije u redu. Pokušaj ponovo ili me kontaktiraj direktno.", true);
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Pošalji poruku";
+      });
   });
-}
+})();
 
 // Pouzdane putanje za slike sa razmakom u nazivu
 const lineImg = document.querySelector(".decor-line-right img");

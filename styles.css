@@ -296,6 +296,11 @@ section {
   color: var(--color-gold);
 }
 
+#contact .section-header h2 {
+  text-transform: none;
+  font-size: clamp(2.2rem, 3.5vw, 2.8rem);
+}
+
 .section-header p {
   margin: 0;
   color: var(--color-text-muted);
@@ -864,6 +869,28 @@ section {
 .contact-form .btn-gold {
   margin-top: 1.6rem;
   width: 100%;
+}
+
+.form-message {
+  display: none;
+  margin: 1.2rem 0 0;
+  padding: 0.9rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.form-message--success {
+  background: rgba(201, 168, 76, 0.15);
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold);
+}
+
+.form-message--error {
+  background: rgba(220, 60, 60, 0.12);
+  border: 1px solid #c94c4c;
+  color: #e87070;
 }
 
 .form-note {
