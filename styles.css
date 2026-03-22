@@ -262,6 +262,44 @@ section {
   width: 100%;
 }
 
+/* Language toggle */
+.lang-toggle {
+  background: none;
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 4px;
+  padding: 0.25rem 0.55rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: inherit;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  transition: border-color 200ms ease;
+}
+
+.lang-toggle:hover {
+  border-color: var(--color-gold);
+}
+
+.lang-option {
+  color: var(--color-text-muted);
+  transition: color 200ms ease;
+  cursor: pointer;
+}
+
+.lang-option--active {
+  color: var(--color-gold);
+  font-weight: 700;
+}
+
+.lang-separator {
+  color: rgba(201, 168, 76, 0.3);
+  font-weight: 300;
+  pointer-events: none;
+}
+
+
 /* Sections */
 
 .section {

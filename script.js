@@ -188,6 +188,25 @@ if (yearEl) {
   const msgEl = document.getElementById("form-message");
   const submitBtn = contactForm.querySelector('button[type="submit"]');
 
+  function t(key) {
+    const lang = localStorage.getItem("mynestof4-lang") || "sr";
+    return (translations[lang] && translations[lang][key]) || key;
+  }
+
+  function getAutoReplyParams(name) {
+    const lang = localStorage.getItem("mynestof4-lang") || "sr";
+    if (lang === "en") {
+      return {
+        reply_subject: "Thank you for your message — MyNestOf4",
+        reply_body: "Hello " + name + ",\n\nThank you for reaching out!\n\nI’ve received your message and will get back to you as soon as possible.\n\nBest regards,",
+      };
+    }
+    return {
+      reply_subject: "Hvala na poruci — MyNestOf4",
+      reply_body: "Zdravo " + name + ",\n\nHvala što si me kontaktirala/o!\n\nPrimila sam tvoju poruku i javiću ti se u najkraćem mogućem roku.\n\nSrdačan pozdrav,",
+    };
+  }
+
   function showMessage(text, isError) {
     msgEl.textContent = text;
     msgEl.className = "form-message " + (isError ? "form-message--error" : "form-message--success");
@@ -205,7 +224,7 @@ if (yearEl) {
     if (!name || !email) return;
 
     submitBtn.disabled = true;
-    submitBtn.textContent = "Šaljem...";
+    submitBtn.textContent = t("contact.sending");
 
     const templateParams = {
       from_name: name,
@@ -213,21 +232,24 @@ if (yearEl) {
       message: message,
     };
 
+    const autoReply = getAutoReplyParams(name);
+    const replyParams = Object.assign({}, templateParams, autoReply);
+
     emailjs
       .send("service_mymngpj", "template_9onp26e", templateParams)
       .then(() => {
-        return emailjs.send("service_mymngpj", "template_91rffuw", templateParams);
+        return emailjs.send("service_mymngpj", "template_91rffuw", replyParams);
       })
       .then(() => {
-        showMessage("Poruka je uspešno poslata! Javiću ti se uskoro.", false);
+        showMessage(t("contact.success"), false);
         contactForm.reset();
       })
       .catch(() => {
-        showMessage("Nešto nije u redu. Pokušaj ponovo ili me kontaktiraj direktno.", true);
+        showMessage(t("contact.error"), true);
       })
       .finally(() => {
         submitBtn.disabled = false;
-        submitBtn.textContent = "Pošalji poruku";
+        submitBtn.textContent = t("contact.submit");
       });
   });
 })();
