@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Lato:wght@300;400;500;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=4" />
 
   <!-- EmailJS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -23,7 +23,12 @@
   <!-- Navigation -->
   <header class="navbar">
     <div class="nav-inner">
-      <nav class="nav-links">
+      <button type="button" class="hamburger" id="hamburger" data-i18n-aria="nav.menu_toggle" aria-controls="nav-links" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+      <nav class="nav-links" id="nav-links">
         <a href="#hero" data-i18n="nav.home">Početna</a>
         <a href="#about" data-i18n="nav.about">O meni</a>
         <a href="#portfolio" data-i18n="nav.portfolio">Radovi</a>

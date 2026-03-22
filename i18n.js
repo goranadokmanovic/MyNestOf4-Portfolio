@@ -5,6 +5,7 @@ const translations = {
     "nav.portfolio": "Radovi",
     "nav.process": "Kako radim",
     "nav.contact": "Kontakt",
+    "nav.menu_toggle": "Otvori ili zatvori meni navigacije",
 
     "hero.heading": "Iz mog gnezda u tvoje.",
     "hero.subtext": "Iz mog gnezda dolaze dve stvari: dizajn koji pretvara uspomene u priču i digitalni proizvodi koji olakšavaju život.",
@@ -58,6 +59,7 @@ const translations = {
     "nav.portfolio": "Portfolio",
     "nav.process": "Process",
     "nav.contact": "Contact",
+    "nav.menu_toggle": "Open or close navigation menu",
 
     "hero.heading": "From my nest to yours.",
     "hero.subtext": "Two things come from my nest: design that turns memories into stories and digital products that make life easier.",
@@ -126,6 +128,13 @@ const translations = {
       const key = el.getAttribute("data-i18n-placeholder");
       if (translations[lang] && translations[lang][key]) {
         el.placeholder = translations[lang][key];
+      }
+    });
+
+    document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+      const key = el.getAttribute("data-i18n-aria");
+      if (translations[lang] && translations[lang][key]) {
+        el.setAttribute("aria-label", translations[lang][key]);
       }
     });
 

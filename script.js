@@ -1,3 +1,46 @@
+// Mobile hamburger menu (CSS prikazuje dugme samo ispod 768px)
+(function () {
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("nav-links");
+  if (!hamburger || !navLinks) return;
+
+  function closeMenu() {
+    navLinks.classList.remove("is-open");
+    hamburger.classList.remove("is-active");
+    hamburger.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("nav-open");
+  }
+
+  function openMenu() {
+    navLinks.classList.add("is-open");
+    hamburger.classList.add("is-active");
+    hamburger.setAttribute("aria-expanded", "true");
+    document.body.classList.add("nav-open");
+  }
+
+  hamburger.addEventListener("click", () => {
+    if (navLinks.classList.contains("is-open")) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
+
+  navLinks.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      closeMenu();
+    });
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
+  });
+
+  window.matchMedia("(min-width: 769px)").addEventListener("change", (e) => {
+    if (e.matches) closeMenu();
+  });
+})();
+
 // Smooth scroll for CTA and nav buttons (if desired to reuse)
 document.querySelectorAll("[data-scroll-to]").forEach((btn) => {
   btn.addEventListener("click", (e) => {
